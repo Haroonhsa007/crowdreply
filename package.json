@@ -1,0 +1,48 @@
+{
+  "name": "crowdreply",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "tsx watch --env-file-if-exists=.env src/server.ts",
+    "build": "tsc",
+    "start": "node --env-file-if-exists=.env dist/server.js",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
+    "test:unit": "vitest run",
+    "worker": "node --env-file-if-exists=.env dist/worker.js",
+    "worker:dev": "tsx watch --env-file-if-exists=.env src/worker.ts",
+    "lint": "eslint src tests --max-warnings 0",
+    "format": "prettier --write src/extraction src/contracts/extraction.ts src/contracts/extraction-api.ts src/keys src/db src/providers src/queue src/workers src/api src/config src/logging src/server.ts src/worker.ts tests package.json tsconfig.test.json docker-compose.yml .github README.md eslint.config.mjs prettier.config.mjs",
+    "format:check": "prettier --check src/extraction src/contracts/extraction.ts src/contracts/extraction-api.ts src/keys src/db src/providers src/queue src/workers src/api src/config src/logging src/server.ts src/worker.ts tests package.json tsconfig.test.json docker-compose.yml .github README.md eslint.config.mjs prettier.config.mjs",
+    "check": "npm run lint && npm run format:check && npm run typecheck && npm run test:unit",
+    "test:idempotency": "vitest run tests/db tests/workers tests/api tests/e2e",
+    "test:retry": "vitest run tests/workers",
+    "test:failure": "vitest run tests/providers tests/workers",
+    "test:integration": "RUN_INTEGRATION=1 node --env-file-if-exists=.env node_modules/vitest/vitest.mjs run tests/db/integration",
+    "test:e2e": "RUN_E2E=1 node --env-file-if-exists=.env node_modules/vitest/vitest.mjs run tests/e2e",
+    "live:check": "tsx --env-file-if-exists=.env src/worker.ts --live-check"
+  },
+  "dependencies": {
+    "bullmq": "6.5.4",
+    "express": "5.3.0",
+    "ioredis": "6.0.0",
+    "mongodb": "7.8.0",
+    "pino": "10.4.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.6",
+    "@types/node": "24.19.2",
+    "@types/supertest": "7.2.1",
+    "eslint": "10.14.0",
+    "prettier": "3.9.10",
+    "supertest": "7.3.1",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.1",
+    "vitest": "5.1.0"
+  }
+}

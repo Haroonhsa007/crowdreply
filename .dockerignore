@@ -1,0 +1,12 @@
+.env
+.env.*
+**/.env
+**/.env.*
+**/node_modules
+**/dist
+**/.next
+**/coverage
+.git
+**/.taste-skill
+**/tests
+*.log
