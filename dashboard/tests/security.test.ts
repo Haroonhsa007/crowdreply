@@ -41,9 +41,9 @@ describe('dashboard trust boundary', () => {
     expect(await verifySession(token + 'corrupt', secret, 1000001)).toBe(false);
     expect(await verifySession(token, secret, 1000000 + 3600000)).toBe(false);
   });
-  it('compares both credentials and throttles repeated failures', () => {
+  it('compares both credentials and throttles repeated failures', async () => {
     expect(
-      verifyCredentials(
+      await verifyCredentials(
         'fixture-operator',
         'placeholder-password',
         config.OPERATOR_USERNAME,
@@ -51,7 +51,7 @@ describe('dashboard trust boundary', () => {
       ),
     ).toBe(true);
     expect(
-      verifyCredentials(
+      await verifyCredentials(
         'x',
         'y',
         config.OPERATOR_USERNAME,

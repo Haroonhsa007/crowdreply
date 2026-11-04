@@ -3,7 +3,8 @@ FROM node:24-slim AS dependencies
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev --ignore-scripts --no-audit --no-fund
-COPY dashboard/package.json dashboard/package-lock.json ./dashboard/
+COPY dashboard/package.json dashboard/package-lock.json dashboard/.npmrc ./dashboard/
+COPY dashboard/tools/minimatch-compat ./dashboard/tools/minimatch-compat/
 WORKDIR /app/dashboard
 RUN npm ci --ignore-scripts --no-audit --no-fund
 

@@ -1,4 +1,3 @@
-
 ## Dashboard usability refresh — 2026-11-03
 
 - Read-only Luna/high audit; Sol/high auth/shell implementation; Astra/high
@@ -112,3 +111,48 @@
   dark/light OS preferences stay white with native color-scheme light, no mobile
   overflow, and actual Cloudlet notification theme/scheme light. Mock-only
   idempotent submission used for the notification check; no paid call.
+
+## Authentication and minimatch security remediation — 2026-11-03
+
+- User supplied CodeQL alerts #1–#3 (js/insufficient-password-hash) and two
+  Dependabot lockfile alerts for GHSA-g3hv-75wg-m249. Replaced SHA-256 password
+  comparisons with asynchronous salted scrypt N=16384/r=8/p=5, 32 MiB maxmem.
+  API keys compare exact UTF-8 bytes with a length guard and timingSafeEqual;
+  empty expected keys fail closed. Existing credentials and cookies retained.
+- Bound credential lengths and synchronously reserve each login verification
+  before awaiting so concurrent requests cannot bypass the failure budget or
+  queue unbounded KDF work. Reservation releases on rejection, failure and redirect.
+- Fresh read-only Codex CLI review confirmed gpt-6-astra/high in session header.
+  It found LOW trailing-NUL equivalence from scrypt's HMAC processing. Reproduced
+  with synthetic strings and Buffers; reject NUL/unpaired UTF-16 before derivation
+  and add six regressions while preserving valid Unicode. Final fresh independent
+  Astra/high review: no findings; reviewer ran bounded synthetic probes, not suites.
+- Root override pins minimatch 11.0.4. Dashboard's six older ESLint consumers
+  use a local CommonJS adapter to the same patched engine, with narrow makeRe.test
+  compatibility. No matcher copying, postinstall hooks or global lint disable.
+  Initial override probes produced broken consumer-relative links; scoped paths
+  and install-links=true now produce a clean packed installation. Nine actual
+  consumer regressions confirm React/import/accessibility errors still report.
+  An initial adapter require-import lint error was fixed with one justified
+  CommonJS-specific directive. No test assertion was weakened.
+- Root npm run check passed lint/format/typecheck and 255 tests, 4 opt-in service
+  tests skipped by default. Explicit npm run test:integration: 3 passed;
+  npm run test:e2e: 5 passed. Root npm run build passed.
+- Dashboard npm run check passed lint/format/typecheck and 108 tests /14 files;
+  npm run build passed. Fresh npm ci --ignore-scripts --no-audit --no-fund and
+  npm ls minimatch --all passed. Root/dashboard npm audits: zero vulnerabilities
+  (initial audits reported 10/16 moderate transitive findings respectively).
+- docker compose config -q and full docker compose up -d --build --wait passed.
+  API, dashboard, Mongo, Redis and worker healthy. Production Chrome verified
+  bad/correct login, password clearing, secure cookie, five protected routes,
+  logout/redirect, and retained light-only theme under dark OS preference.
+  Missing/wrong API keys rejected; valid key accepted. Actual Mock submission
+  completed through worker, raw answer persistence and extraction; spend unchanged.
+  Browser page errors zero; paid provider calls zero. Credentials not reset.
+- Secret scan checked 1,300 source/build/log files against ten configured secret
+  strings: no leaks; Docker logs clean; .env mode 600. SECURITY.md replaces stale
+  template with actual supported version, private reporting, protections/limits,
+  dependency strategy and release checks. DECISIONS.md records remediation.
+- No git commands, merges, pushes, remote deployment or provider calls. GitHub
+  CodeQL/Dependabot closure remains pending owner publication and branch rescan;
+  CodeQL CLI is not installed locally. Local tests do not prove live behavior.

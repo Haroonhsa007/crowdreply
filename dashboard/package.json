@@ -35,5 +35,26 @@
     "prettier": "3.9.10",
     "typescript": "6.0.3",
     "vitest": "5.1.0"
+  },
+  "overrides": {
+    "minimatch@>=4": "11.0.4",
+    "eslint": {
+      "minimatch": "file:../../tools/minimatch-compat"
+    },
+    "eslint-plugin-react": {
+      "minimatch": "file:../../tools/minimatch-compat"
+    },
+    "eslint-plugin-import": {
+      "minimatch": "file:../../tools/minimatch-compat"
+    },
+    "eslint-plugin-jsx-a11y": {
+      "minimatch": "file:../../tools/minimatch-compat"
+    },
+    "@eslint/config-array": {
+      "minimatch": "file:../../../tools/minimatch-compat"
+    },
+    "@eslint/eslintrc": {
+      "minimatch": "file:../../../tools/minimatch-compat"
+    }
   }
 }
